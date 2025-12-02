@@ -1,152 +1,107 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import { Trash2, Minus, Plus, ShieldCheck, Lock, ArrowRight, Truck } from 'lucide-react';
-import { useCart } from '../context/CartContext';
+import { useShop } from '../context/ShopContext';
+import { Trash2, Minus, Plus, ArrowRight, Lock } from 'lucide-react';
 
-const CartPage: React.FC = () => {
-  const { items, updateQuantity, removeFromCart, cartTotal } = useCart();
+export const CartPage = () => {
+  const { cart, updateQuantity, removeFromCart, cartTotal } = useShop();
   const navigate = useNavigate();
 
-  if (items.length === 0) {
+  useEffect(() => {
+    document.title = "Sepetim | Kars Reserve";
+  }, []);
+
+  if (cart.length === 0) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center p-4">
-        <div className="bg-stone-100 p-8 rounded-full mb-6">
-          <ShieldCheck size={64} className="text-stone-300" />
-        </div>
-        <h2 className="text-2xl font-serif font-bold text-gray-800 mb-4">Sepetiniz Boş</h2>
-        <p className="text-gray-500 mb-8">Henüz sepetinize doğal lezzetlerimizden eklemediniz.</p>
-        <Link to="/products" className="bg-brand-black text-white px-8 py-3 rounded-lg hover:bg-brand-brown transition">
-          Alışverişe Başla
+      <div className="min-h-[60vh] flex flex-col items-center justify-center p-4 bg-brand-cream">
+        <h2 className="text-4xl font-serif mb-6 text-brand-black">Sepetiniz Boş</h2>
+        <Link to="/products" className="border-b-2 border-brand-black pb-1 text-sm font-bold uppercase tracking-widest hover:text-brand-green hover:border-brand-green transition">
+          Alışverişe Dön
         </Link>
       </div>
     );
   }
 
+  const isFreeShipping = cartTotal >= 500;
+  const shippingCost = isFreeShipping ? 0 : 50;
+  const grandTotal = cartTotal + shippingCost;
+
   return (
-    <div className="bg-stone-50 min-h-screen py-10">
-      <div className="container mx-auto px-4 max-w-6xl">
-        <h1 className="text-3xl font-serif font-bold text-gray-900 mb-8">Alışveriş Sepeti</h1>
-        
-        <div className="flex flex-col lg:flex-row gap-8">
-          {/* Cart Items List */}
-          <div className="lg:w-2/3">
-            <div className="bg-white rounded-xl shadow-sm border border-stone-200 overflow-hidden">
-              <div className="p-4 border-b border-stone-100 bg-stone-50 text-xs font-bold text-stone-500 uppercase tracking-wider hidden md:flex">
-                <div className="w-1/2">Ürün</div>
-                <div className="w-1/6 text-center">Fiyat</div>
-                <div className="w-1/6 text-center">Adet</div>
-                <div className="w-1/6 text-right">Toplam</div>
-              </div>
-              
-              {items.map((item) => (
-                <div key={item.id} className="p-4 border-b border-stone-100 flex flex-col md:flex-row items-center gap-4">
-                  
-                  {/* Product Info */}
-                  <div className="w-full md:w-1/2 flex items-center gap-4">
-                    <img src={item.image} alt={item.name} className="w-20 h-20 object-cover rounded bg-stone-100" />
-                    <div>
-                      <div className="text-xs text-brand-brown mb-1">Ürün Kodu: {item.slug.slice(0, 6).toUpperCase()}</div>
-                      <Link to={`/product/${item.slug}`} className="font-bold text-gray-900 hover:text-brand-brown transition">
-                        {item.name}
-                      </Link>
-                      <button 
-                        onClick={() => removeFromCart(item.id)}
-                        className="flex items-center gap-1 text-red-500 text-xs mt-2 hover:text-red-700"
-                      >
-                        <Trash2 size={12} /> Kaldır
-                      </button>
+    <div className="bg-brand-cream min-h-screen py-16">
+      <div className="container mx-auto px-6 max-w-5xl">
+        <h1 className="text-3xl font-serif mb-12 text-brand-black">Alışveriş Sepeti</h1>
+
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-16">
+          {/* Cart List - Minimal List Style */}
+          <div className="lg:col-span-2 space-y-8">
+             {cart.map(item => (
+                <div key={item.id} className="flex gap-6 border-b border-gray-200 pb-8 items-start">
+                    <div className="w-24 h-32 bg-gray-100 shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover grayscale-[20%]" />
                     </div>
-                  </div>
-
-                  {/* Mobile Price Label */}
-                  <div className="flex justify-between w-full md:hidden">
-                    <span className="font-bold">Birim Fiyat:</span>
-                    <span>{item.price} ₺</span>
-                  </div>
-
-                  {/* Desktop Price */}
-                  <div className="hidden md:block w-1/6 text-center font-medium text-stone-600">
-                    {item.price.toLocaleString('tr-TR')} ₺
-                  </div>
-
-                  {/* Quantity */}
-                  <div className="w-full md:w-1/6 flex justify-center">
-                    <div className="flex items-center border border-stone-300 rounded h-10 bg-stone-50">
-                      <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="px-2 h-full hover:bg-stone-200 text-stone-600"><Minus size={16} /></button>
-                      <input 
-                        type="text" 
-                        readOnly 
-                        value={item.quantity} 
-                        className="w-10 text-center bg-transparent font-medium focus:outline-none"
-                      />
-                      <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="px-2 h-full hover:bg-stone-200 text-stone-600"><Plus size={16} /></button>
+                    <div className="flex-1">
+                        <div className="flex justify-between mb-2">
+                             <Link to={`/product/${item.id}`} className="font-serif text-xl text-brand-black hover:underline">{item.name}</Link>
+                             <span className="font-sans font-bold text-lg">{item.price * item.quantity} TL</span>
+                        </div>
+                        <p className="text-xs text-gray-500 uppercase tracking-widest mb-4">Miktar: {item.quantity}</p>
+                        
+                        <div className="flex items-center gap-6">
+                            <div className="flex items-center border border-gray-300">
+                                <button onClick={() => updateQuantity(item.id, item.quantity - 1)} className="p-2 hover:bg-gray-100"><Minus className="w-3 h-3" /></button>
+                                <span className="w-8 text-center text-sm font-bold">{item.quantity}</span>
+                                <button onClick={() => updateQuantity(item.id, item.quantity + 1)} className="p-2 hover:bg-gray-100"><Plus className="w-3 h-3" /></button>
+                            </div>
+                            <button onClick={() => removeFromCart(item.id)} className="text-xs text-gray-400 hover:text-red-500 underline">
+                                Kaldır
+                            </button>
+                        </div>
                     </div>
-                  </div>
-
-                  {/* Total */}
-                  <div className="w-full md:w-1/6 flex justify-between md:justify-end items-center md:items-start mt-2 md:mt-0">
-                    <span className="md:hidden font-bold">Toplam:</span>
-                    <span className="font-bold text-lg text-brand-black">
-                      {(item.price * item.quantity).toLocaleString('tr-TR')} ₺
-                    </span>
-                  </div>
                 </div>
-              ))}
-            </div>
-
-            {/* Trust Info */}
-            <div className="mt-6 flex flex-wrap gap-4 justify-center md:justify-start text-stone-500 text-xs">
-              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded border border-stone-200">
-                <ShieldCheck size={16} className="text-green-600" /> %100 Güvenli Alışveriş
-              </div>
-              <div className="flex items-center gap-2 bg-white px-3 py-2 rounded border border-stone-200">
-                <Truck size={16} className="text-brand-brown" /> Ücretsiz Kargo
-              </div>
-            </div>
+             ))}
           </div>
 
-          {/* Summary Sidebar */}
-          <div className="lg:w-1/3">
-            <div className="bg-white rounded-xl shadow-sm border border-stone-200 p-6 sticky top-24">
-              <h3 className="font-serif font-bold text-xl mb-4 text-gray-900 border-b border-stone-100 pb-2">Sipariş Özeti</h3>
-              
-              <div className="space-y-3 mb-6">
-                <div className="flex justify-between text-stone-600">
-                  <span>Ara Toplam</span>
-                  <span>{cartTotal.toLocaleString('tr-TR')} ₺</span>
+          {/* Summary */}
+          <div className="lg:col-span-1">
+             <div className="bg-white p-8 border border-gray-200 sticky top-32">
+                <h3 className="font-display font-bold text-lg uppercase tracking-wider mb-6">Özet</h3>
+                
+                <div className="space-y-4 mb-8 text-sm text-gray-600">
+                    <div className="flex justify-between">
+                        <span>Ara Toplam</span>
+                        <span>{cartTotal} TL</span>
+                    </div>
+                    <div className="flex justify-between">
+                        <span>Kargo</span>
+                        {isFreeShipping ? (
+                             <span className="text-brand-green font-bold">Ücretsiz</span>
+                        ) : (
+                             <span>{shippingCost} TL</span>
+                        )}
+                    </div>
                 </div>
-                <div className="flex justify-between text-green-600 font-medium">
-                  <span>Kargo</span>
-                  <span>0,00 ₺</span>
+
+                <div className="border-t border-gray-200 pt-6 mb-8">
+                    <div className="flex justify-between items-baseline">
+                        <span className="font-bold text-lg text-brand-black">Toplam</span>
+                        <span className="font-bold text-2xl text-brand-green">{grandTotal} TL</span>
+                    </div>
                 </div>
-              </div>
-              
-              <div className="flex justify-between items-center text-xl font-bold text-gray-900 border-t border-stone-100 pt-4 mb-6">
-                <span>Genel Toplam</span>
-                <span>{cartTotal.toLocaleString('tr-TR')} ₺</span>
-              </div>
 
-              <div className="bg-green-50 text-green-700 p-3 rounded-lg text-sm text-center mb-6 border border-green-100">
-                <span className="font-bold">Ücretsiz Kargo</span> fırsatından yararlanıyorsunuz!
-              </div>
-
-              <button 
-                onClick={() => navigate('/checkout')}
-                className="w-full bg-brand-green hover:bg-brand-greenHover text-white font-bold py-4 rounded-lg shadow-lg hover:shadow-xl transition-all transform hover:-translate-y-1 flex justify-center items-center gap-2 text-lg"
-              >
-                SEPETİ ONAYLA <ArrowRight size={20} />
-              </button>
-
-              <div className="mt-4 flex items-center justify-center gap-2 text-stone-400 text-xs">
-                <Lock size={12} />
-                <span>256-Bit SSL ile güvenli ödeme</span>
-              </div>
-            </div>
+                <button 
+                  onClick={() => navigate('/checkout')}
+                  className="w-full bg-brand-black text-white py-4 uppercase tracking-widest text-xs font-bold hover:bg-brand-green transition flex justify-center items-center group"
+                >
+                  Ödemeye Geç <ArrowRight className="ml-2 w-4 h-4" />
+                </button>
+                
+                <div className="mt-4 flex justify-center items-center text-[10px] text-gray-400 gap-1">
+                   <Lock className="w-3 h-3" /> Güvenli SSL Ödeme
+                </div>
+             </div>
           </div>
         </div>
       </div>
     </div>
   );
 };
-
-export default CartPage;

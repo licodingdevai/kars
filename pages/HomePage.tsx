@@ -1,145 +1,186 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
+import { Hero } from '../components/Hero';
+import { ProductCard } from '../components/ProductCard';
+import { useShop } from '../context/ShopContext';
 import { Link } from 'react-router-dom';
-import { ArrowRight, Star, ShieldCheck, Truck, Award, MessageCircle } from 'lucide-react';
-import { CATEGORIES, PRODUCTS } from '../constants';
-import ProductCard from '../components/ProductCard';
+import { ArrowRight, Snowflake, ShieldCheck, Award } from 'lucide-react';
 
-const HomePage: React.FC = () => {
-  const featuredProducts = PRODUCTS.slice(0, 4);
+export const HomePage = () => {
+  const { products } = useShop();
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+  
+  useEffect(() => {
+    document.title = "Kars Reserve | Orijinal Lezzet";
+  }, []);
+
+  // Filter logic
+  const filteredProducts = selectedCategory === 'all' 
+    ? products 
+    : products.filter(p => p.category === selectedCategory);
+
+  const categories = [
+    { 
+      id: 'all', 
+      label: 'TÜMÜ', 
+      image: '/assets/images/category-tumu.png' 
+    },
+    { 
+      id: 'peynir', 
+      label: 'PEYNİR', 
+      image: '/assets/images/category-peynir.png'
+    },
+    { 
+      id: 'bal', 
+      label: 'BAL', 
+      image: '/assets/images/category-bal.png'
+    },
+    { 
+      id: 'yag', 
+      label: 'TEREYAĞI', 
+      image: '/assets/images/category-tereyagi.png'
+    },
+  ];
 
   return (
-    <div>
-      {/* Hero Section */}
-      <section className="relative h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 bg-black">
-          <img 
-            src="https://picsum.photos/id/106/1920/1080" 
-            alt="Kars Yaylası" 
-            className="w-full h-full object-cover opacity-60"
-          />
-        </div>
-        <div className="relative z-10 text-center px-4 max-w-4xl mx-auto">
-          <span className="text-brand-gold font-bold tracking-[0.3em] text-sm md:text-base mb-4 block animate-fade-in-up">DOĞADAN GELEN LEZZET</span>
-          <h1 className="text-4xl md:text-6xl font-serif font-bold text-white mb-6 leading-tight shadow-sm">
-            Kars'ın Zirvesinden<br/>Sofranıza
-          </h1>
-          <p className="text-stone-200 text-lg md:text-xl mb-10 max-w-2xl mx-auto font-light">
-            Yüzyıllık gelenekle üretilen, katkısız ve doğal yöresel ürünleri kapınıza kadar getiriyoruz.
-          </p>
-          <Link 
-            to="/products" 
-            className="inline-flex items-center gap-2 bg-brand-green hover:bg-brand-greenHover text-white px-8 py-4 rounded-lg font-bold transition-all transform hover:-translate-y-1 shadow-lg text-lg"
-          >
-            Alışverişe Başla <ArrowRight size={20} />
-          </Link>
-        </div>
-      </section>
-
-      {/* Trust Badges */}
-      <section className="bg-white py-12 border-b border-stone-100">
-        <div className="container mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-stone-50 p-4 rounded-full mb-4 text-brand-brown">
-              <Truck size={32} />
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2">Ücretsiz Kargo</h3>
-            <p className="text-sm text-gray-500">Tüm Türkiye'ye bedava</p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-stone-50 p-4 rounded-full mb-4 text-brand-brown">
-              <ShieldCheck size={32} />
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2">Güvenli Ödeme</h3>
-            <p className="text-sm text-gray-500">256-bit SSL Koruması</p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-stone-50 p-4 rounded-full mb-4 text-brand-brown">
-              <Star size={32} />
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2">%100 Doğal</h3>
-            <p className="text-sm text-gray-500">Katkısız ve organik</p>
-          </div>
-          <div className="flex flex-col items-center text-center">
-            <div className="bg-stone-50 p-4 rounded-full mb-4 text-brand-brown">
-              <Award size={32} />
-            </div>
-            <h3 className="font-bold text-gray-900 mb-2">Memnuniyet Garantisi</h3>
-            <p className="text-sm text-gray-500">İade garantisi</p>
-          </div>
+    <div className="bg-white">
+      <Hero />
+      
+      {/* DIRECT COMMERCE SECTION */}
+      
+      {/* 1. Category Navigation - Story Style */}
+      <section className="sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-gray-100 py-6">
+        <div 
+          className="container mx-auto px-4 md:px-8 overflow-x-auto [&::-webkit-scrollbar]:hidden" 
+          style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
+        >
+           <div className="flex space-x-8 md:justify-center min-w-max px-2 py-2">
+              {categories.map((cat) => (
+                <button 
+                  key={cat.id}
+                  onClick={() => setSelectedCategory(cat.id)}
+                  className="flex flex-col items-center group min-w-[70px] focus:outline-none"
+                >
+                  <div className={`
+                    w-16 h-16 md:w-20 md:h-20 rounded-full p-[3px] transition-all duration-300 ease-out
+                    ${selectedCategory === cat.id 
+                      ? 'border-2 border-brand-green scale-110 shadow-lg shadow-brand-green/20' 
+                      : 'border-2 border-gray-100 group-hover:border-brand-green/40'
+                    }
+                  `}>
+                    <div className="w-full h-full rounded-full overflow-hidden bg-gray-100 relative">
+                       <img 
+                          src={cat.image} 
+                          alt={cat.label} 
+                          className={`
+                            w-full h-full object-cover transition-all duration-500
+                            ${selectedCategory === cat.id ? 'scale-110' : 'grayscale group-hover:grayscale-0 group-hover:scale-110'}
+                          `} 
+                       />
+                       {/* Subtle overlay for unselected */}
+                       {selectedCategory !== cat.id && (
+                         <div className="absolute inset-0 bg-white/10 group-hover:bg-transparent transition-colors" />
+                       )}
+                    </div>
+                  </div>
+                  
+                  <span className={`
+                    mt-3 text-[10px] md:text-xs font-display font-bold tracking-widest uppercase transition-colors duration-300
+                    ${selectedCategory === cat.id 
+                      ? 'text-brand-green' 
+                      : 'text-gray-400 group-hover:text-brand-black'
+                    }
+                  `}>
+                    {cat.label}
+                  </span>
+                </button>
+              ))}
+           </div>
         </div>
       </section>
 
-      {/* Categories */}
-      <section className="py-20 bg-stone-50">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Kategoriler</h2>
-            <div className="w-24 h-1 bg-brand-gold mx-auto"></div>
+      {/* 2. Product Grid - Immediate Display */}
+      <section className="py-12 md:py-16">
+        <div className="container mx-auto px-4 md:px-8">
+          <div className="flex justify-between items-center mb-8 border-l-4 border-brand-green pl-4">
+             <h2 className="text-2xl font-display font-bold text-brand-black tracking-tight uppercase">
+               {selectedCategory === 'all' ? 'Öne Çıkanlar' : categories.find(c => c.id === selectedCategory)?.label}
+             </h2>
+             <span className="text-xs font-bold text-brand-green bg-brand-green/10 px-3 py-1 rounded-full">
+               {filteredProducts.length} Ürün
+             </span>
           </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-            {CATEGORIES.map((cat) => (
-              <Link key={cat.id} to="/products" className="group relative h-64 overflow-hidden rounded-xl shadow-md cursor-pointer">
-                <img 
-                  src={cat.image} 
-                  alt={cat.name} 
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-                <div className="absolute inset-0 bg-black/40 group-hover:bg-black/50 transition-colors flex items-center justify-center">
-                  <h3 className="text-white text-xl font-serif font-bold border-b-2 border-brand-gold pb-1">{cat.name}</h3>
-                </div>
-              </Link>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* Featured Products */}
-      <section className="py-20 bg-white">
-        <div className="container mx-auto px-4">
-          <div className="text-center mb-12">
-            <h2 className="text-3xl font-serif font-bold text-gray-900 mb-4">Öne Çıkan Ürünler</h2>
-            <p className="text-gray-600 max-w-2xl mx-auto">Müşterilerimizin en çok tercih ettiği, Kars'ın eşsiz lezzetlerini keşfedin.</p>
-          </div>
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-            {featuredProducts.map((product) => (
+          
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-10">
+            {filteredProducts.map(product => (
               <ProductCard key={product.id} product={product} />
             ))}
           </div>
-          <div className="text-center mt-12">
-            <Link 
-              to="/products" 
-              className="inline-block border-2 border-brand-black text-brand-black px-10 py-3 rounded hover:bg-brand-black hover:text-white transition font-medium tracking-wide"
-            >
-              TÜM ÜRÜNLERİ GÖR
-            </Link>
-          </div>
+
+          {filteredProducts.length === 0 && (
+            <div className="text-center py-20 bg-gray-50 rounded-lg border border-gray-100 border-dashed">
+               <p className="text-gray-500 font-medium">Bu kategoride henüz ürün bulunmuyor.</p>
+            </div>
+          )}
         </div>
       </section>
 
-      {/* Banner */}
-      <section className="py-20 bg-brand-brown text-white relative overflow-hidden">
-        <div className="absolute top-0 right-0 w-64 h-64 bg-white/10 rounded-full blur-3xl transform translate-x-1/2 -translate-y-1/2"></div>
-        <div className="container mx-auto px-4 relative z-10 flex flex-col md:flex-row items-center justify-between gap-10">
-          <div className="md:w-1/2">
-            <h2 className="text-3xl md:text-4xl font-serif font-bold mb-6">WhatsApp ile Hızlı Sipariş</h2>
-            <p className="text-white/80 text-lg mb-8">
-              Web sitesiyle uğraşmak istemiyor musunuz? WhatsApp hattımız üzerinden uzman ekibimizle görüşerek siparişinizi saniyeler içinde oluşturabilirsiniz.
-            </p>
-            <a 
-              href="https://wa.me/905555555555" 
-              className="inline-flex items-center gap-3 bg-green-500 hover:bg-green-600 text-white px-8 py-4 rounded-lg font-bold transition shadow-lg"
-            >
-              <MessageCircle size={24} />
-              WhatsApp'tan Yazın
-            </a>
-          </div>
-          <div className="md:w-1/2 flex justify-center">
-            <img src="https://picsum.photos/id/431/500/500" alt="Doğal Lezzetler" className="rounded-2xl shadow-2xl border-4 border-white/20" />
-          </div>
+      {/* 3. Visual Gallery Section (5 Mock Images) */}
+      <section className="py-12 border-t border-gray-100 bg-gray-50/50">
+        <div className="container mx-auto px-4 md:px-8">
+           <div className="grid grid-cols-2 md:grid-cols-5 gap-4">
+              {[1, 2, 3, 4, 5].map((item) => (
+                 <div key={item} className="aspect-square bg-gray-200 rounded-lg overflow-hidden relative group cursor-pointer">
+                    <img 
+                      src={`/assets/images/${item}.webp`} 
+                      alt="Gallery" 
+                      className="w-full h-full object-cover transition-transform duration-700 ease-in-out grayscale-[20%] group-hover:grayscale-0"
+                    />
+                 </div>
+              ))}
+           </div>
         </div>
+      </section>
+
+      {/* Trust Badges - Modern Grid with Dividers */}
+      <section className="py-20 border-t border-gray-100 bg-white">
+          <div className="container mx-auto px-4 md:px-8">
+              <div className="grid grid-cols-1 md:grid-cols-3 divide-y md:divide-y-0 md:divide-x divide-gray-100">
+                  
+                  {/* Item 1 */}
+                  <div className="flex flex-col items-center text-center p-8 group cursor-default transition-colors hover:bg-gray-50/50">
+                      <div className="w-16 h-16 bg-brand-green/10 rounded-full flex items-center justify-center mb-6 text-brand-green group-hover:bg-brand-green group-hover:text-white transition-all duration-300 ease-out">
+                        <Snowflake className="w-8 h-8" strokeWidth={1.5} />
+                      </div>
+                      <h3 className="font-display font-bold text-lg text-brand-black mb-3 uppercase tracking-tight">Soğuk Zincir</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed max-w-[250px]">
+                        Ürünleriniz özel ısı yalıtımlı kutularda, bozulmadan kapınıza gelir.
+                      </p>
+                  </div>
+
+                   {/* Item 2 */}
+                  <div className="flex flex-col items-center text-center p-8 group cursor-default transition-colors hover:bg-gray-50/50">
+                      <div className="w-16 h-16 bg-brand-green/10 rounded-full flex items-center justify-center mb-6 text-brand-green group-hover:bg-brand-green group-hover:text-white transition-all duration-300 ease-out">
+                        <ShieldCheck className="w-8 h-8" strokeWidth={1.5} />
+                      </div>
+                      <h3 className="font-display font-bold text-lg text-brand-black mb-3 uppercase tracking-tight">Kırılmaz Garanti</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed max-w-[250px]">
+                        Taşıma sırasında oluşabilecek her türlü hasar tarafımızca karşılanır.
+                      </p>
+                  </div>
+
+                   {/* Item 3 */}
+                  <div className="flex flex-col items-center text-center p-8 group cursor-default transition-colors hover:bg-gray-50/50">
+                      <div className="w-16 h-16 bg-brand-green/10 rounded-full flex items-center justify-center mb-6 text-brand-green group-hover:bg-brand-green group-hover:text-white transition-all duration-300 ease-out">
+                        <Award className="w-8 h-8" strokeWidth={1.5} />
+                      </div>
+                      <h3 className="font-display font-bold text-lg text-brand-black mb-3 uppercase tracking-tight">%100 Orijinal</h3>
+                      <p className="text-sm text-gray-500 leading-relaxed max-w-[250px]">
+                        Coğrafi işaretli, Kars yöresine ait sertifikalı üretim.
+                      </p>
+                  </div>
+              </div>
+          </div>
       </section>
     </div>
   );
 };
-
-export default HomePage;

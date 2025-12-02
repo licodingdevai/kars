@@ -2,36 +2,49 @@ export interface Product {
   id: string;
   name: string;
   slug: string;
-  category: string;
   price: number;
   oldPrice?: number;
   image: string;
-  alt: string; // Critical for SEO
+  imageAlt: string; // Critical for SEO
+  category: string;
   description: string;
   shortDescription: string;
-  features: string[];
+  reviews: Review[];
+  stock: number;
+}
+
+export interface Review {
+  id: string;
+  user: string;
+  avatar: string; // Picsum url
+  rating: number;
+  comment: string;
+  date: string;
 }
 
 export interface CartItem extends Product {
   quantity: number;
 }
 
-export interface Review {
-  id: number;
-  user: string;
-  avatar: string;
-  rating: number;
-  comment: string;
-  date: string;
-}
-
-export interface Category {
+export interface Order {
   id: string;
-  name: string;
-  image: string;
+  items: CartItem[];
+  total: number;
+  customer: {
+    name: string;
+    email: string;
+    phone: string;
+    address: string;
+  };
+  date: string;
+  status: 'pending' | 'shipped' | 'delivered';
 }
 
-// Extend window for Google Tag Manager
+export interface AnalyticsEvent {
+  event: string;
+  [key: string]: any;
+}
+
 declare global {
   interface Window {
     dataLayer: any[];

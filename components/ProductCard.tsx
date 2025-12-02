@@ -1,68 +1,80 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import { ShoppingBasket } from 'lucide-react';
+import { ShoppingBag, Plus } from 'lucide-react';
 import { Product } from '../types';
-import { useCart } from '../context/CartContext';
+import { useShop } from '../context/ShopContext';
 
 interface ProductCardProps {
   product: Product;
 }
 
-const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
-  const { addToCart } = useCart();
+export const ProductCard: React.FC<ProductCardProps> = ({ product }) => {
+  const { addToCart } = useShop();
 
   const handleAddToCart = (e: React.MouseEvent) => {
     e.preventDefault();
     addToCart(product, 1);
   };
 
+  const discount = product.oldPrice
+    ? Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)
+    : 0;
+
   return (
-    <Link to={`/product/${product.slug}`} className="group bg-white rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition-all duration-300 border border-stone-100 flex flex-col h-full">
-      <div className="relative aspect-square overflow-hidden bg-stone-100">
-        <img 
-          src={product.image} 
-          alt={product.alt} 
-          className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700" 
-        />
-        {product.oldPrice && (
-          <div className="absolute top-2 right-2 bg-red-600 text-white text-xs font-bold px-2 py-1 rounded">
-            %{Math.round(((product.oldPrice - product.price) / product.oldPrice) * 100)} İNDİRİM
-          </div>
-        )}
-        <div className="absolute top-2 left-2 bg-brand-black text-brand-gold text-[10px] font-bold px-2 py-1 uppercase tracking-wider">
-          Kargo Bedava
+    <Link to={`/product/${product.id}`} className="group block h-full">
+      <div className="relative h-full flex flex-col bg-white border border-gray-100 rounded-lg overflow-hidden transition-all duration-300 hover:shadow-xl hover:shadow-brand-green/10 hover:-translate-y-1">
+
+        {/* Image Area - Square Aspect Ratio */}
+        <div className="relative aspect-square bg-[#f8f8f8] overflow-hidden">
+          <img
+            src={product.image}
+            alt={product.imageAlt}
+            className="w-full h-full object-cover transition-transform duration-700 ease-in-out group-hover:scale-105"
+          />
+
+          {/* Badges - Green */}
+          {product.oldPrice && (
+            <div className="absolute top-3 left-3 bg-brand-green text-white text-[10px] font-bold px-3 py-1.5 uppercase tracking-wider rounded-sm shadow-sm z-20">
+              %{discount} İndirim
+            </div>
+          )}
+          
+          {/* Subtle Overlay on Hover */}
+          <div className="absolute inset-0 bg-brand-green/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none z-10" />
         </div>
-      </div>
-      
-      <div className="p-4 flex flex-col flex-grow">
-        <span className="text-xs text-brand-brown font-medium mb-1">{product.category}</span>
-        <h3 className="font-serif text-lg font-bold text-gray-900 mb-2 leading-tight group-hover:text-brand-brown transition-colors">
-          {product.name}
-        </h3>
-        <p className="text-gray-500 text-xs mb-4 line-clamp-2">{product.shortDescription}</p>
-        
-        <div className="mt-auto flex items-center justify-between">
-          <div className="flex flex-col">
-            {product.oldPrice && (
-              <span className="text-xs text-gray-400 line-through">
-                {product.oldPrice.toLocaleString('tr-TR')} ₺
-              </span>
-            )}
-            <span className="text-lg font-bold text-gray-900">
-              {product.price.toLocaleString('tr-TR')} ₺
-            </span>
+
+        {/* Content */}
+        <div className="p-4 flex flex-col flex-grow">
+          <div className="flex flex-col gap-1 mb-3">
+             <span className="text-[10px] font-bold text-gray-400 uppercase tracking-widest group-hover:text-brand-green transition-colors">{product.category}</span>
+             <h3 className="font-display font-bold text-base text-brand-black leading-tight group-hover:text-brand-green transition-colors line-clamp-2">
+               {product.name}
+             </h3>
           </div>
-          <button 
-            onClick={handleAddToCart}
-            className="bg-brand-green hover:bg-brand-greenHover text-white p-2 rounded-full transition-colors shadow-md transform active:scale-95"
-            aria-label="Sepete Ekle"
-          >
-            <ShoppingBasket size={20} />
-          </button>
+          
+          <div className="mt-auto pt-3 border-t border-gray-100 flex items-center justify-between gap-2">
+             <div className="flex flex-col">
+                {product.oldPrice && (
+                   <span className="text-[10px] text-gray-400 line-through mb-0.5">
+                       {product.oldPrice} TL
+                   </span>
+                )}
+                <span className="font-display font-bold text-lg text-brand-green">
+                  {product.price} TL
+                </span>
+             </div>
+
+             <button
+                onClick={handleAddToCart}
+                className="bg-brand-green text-white hover:bg-brand-darkGreen transition-colors px-4 py-2 rounded-md flex items-center gap-2 shadow-sm font-display font-bold text-[10px] uppercase tracking-wider"
+             >
+                <ShoppingBag className="w-3 h-3" />
+                <span>Sepete Ekle</span>
+             </button>
+          </div>
         </div>
+
       </div>
     </Link>
   );
 };
-
-export default ProductCard;

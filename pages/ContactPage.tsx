@@ -1,100 +1,36 @@
 import React from 'react';
-import { Phone, Mail, MapPin, MessageCircle } from 'lucide-react';
+import { COMPANY_PHONE, COMPANY_WHATSAPP } from '../constants';
 
-const ContactPage: React.FC = () => {
+export const ContactPage = () => {
   return (
-    <div className="bg-stone-50 min-h-screen py-10">
-      <div className="container mx-auto px-4 max-w-5xl">
-        <h1 className="text-3xl md:text-4xl font-serif font-bold text-center mb-12 text-brand-black">Bize Ulaşın</h1>
+    <div className="bg-brand-cream py-20">
+      <div className="container mx-auto px-6 max-w-4xl">
+        <h1 className="text-5xl font-serif text-center mb-16 text-brand-black">İletişim</h1>
 
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-10">
-          
-          {/* Info Section */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-16 border-t border-brand-black/10 pt-16">
           <div className="space-y-8">
-            <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-200">
-              <h2 className="text-xl font-bold mb-6 font-serif">İletişim Bilgileri</h2>
-              <div className="space-y-6">
-                <div className="flex items-start gap-4">
-                  <div className="bg-brand-gold/10 p-3 rounded-full text-brand-brown">
-                    <MapPin size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-brand-black">Adresimiz</h3>
-                    <p className="text-stone-600">Cumhuriyet Cad. No:12<br/>Merkez / KARS</p>
-                  </div>
-                </div>
-                
-                <div className="flex items-start gap-4">
-                  <div className="bg-brand-gold/10 p-3 rounded-full text-brand-brown">
-                    <Phone size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-brand-black">Telefon</h3>
-                    <p className="text-stone-600">0850 123 45 67</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-brand-gold/10 p-3 rounded-full text-brand-brown">
-                    <Mail size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-brand-black">E-Posta</h3>
-                    <p className="text-stone-600">bilgi@karsreserve.com</p>
-                  </div>
-                </div>
-
-                <div className="flex items-start gap-4">
-                  <div className="bg-brand-gold/10 p-3 rounded-full text-brand-brown">
-                    <MessageCircle size={24} />
-                  </div>
-                  <div>
-                    <h3 className="font-bold text-brand-black">WhatsApp</h3>
-                    <p className="text-stone-600">0555 555 55 55</p>
-                  </div>
-                </div>
-              </div>
+            <div>
+               <h3 className="font-display font-bold text-sm uppercase tracking-widest mb-2">Adres</h3>
+               <p className="text-gray-600 font-light leading-relaxed">Ortakapı Mahallesi, Faikbey Caddesi No:10<br/>36000 Kars Merkez/Kars</p>
             </div>
-
-            <div className="bg-brand-brown text-white p-8 rounded-xl shadow-md">
-              <h3 className="text-xl font-serif font-bold mb-4">Toplu Siparişler</h3>
-              <p className="mb-4 text-white/90">Kurumsal hediyelikler ve düğün/nişan organizasyonlarınız için özel fiyat teklifi alın.</p>
-              <button className="bg-white text-brand-brown font-bold px-6 py-2 rounded hover:bg-stone-100 transition">Teklif Alın</button>
+            <div>
+               <h3 className="font-display font-bold text-sm uppercase tracking-widest mb-2">Telefon</h3>
+               <p className="text-gray-600 font-light">{COMPANY_PHONE}</p>
+            </div>
+            <div>
+               <h3 className="font-display font-bold text-sm uppercase tracking-widest mb-2">E-posta</h3>
+               <p className="text-gray-600 font-light">info@karsreserve.com</p>
             </div>
           </div>
 
-          {/* Form Section */}
-          <div className="bg-white p-8 rounded-xl shadow-sm border border-stone-200">
-            <h2 className="text-xl font-bold mb-6 font-serif">Mesaj Gönderin</h2>
-            <form className="space-y-4">
-              <div className="grid grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-sm font-medium text-stone-600 mb-1">Ad</label>
-                  <input type="text" className="w-full border border-stone-300 rounded p-3 focus:border-brand-gold outline-none" placeholder="Adınız" />
-                </div>
-                <div>
-                  <label className="block text-sm font-medium text-stone-600 mb-1">Soyad</label>
-                  <input type="text" className="w-full border border-stone-300 rounded p-3 focus:border-brand-gold outline-none" placeholder="Soyadınız" />
-                </div>
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-stone-600 mb-1">E-Posta</label>
-                <input type="email" className="w-full border border-stone-300 rounded p-3 focus:border-brand-gold outline-none" placeholder="ornek@email.com" />
-              </div>
-              <div>
-                <label className="block text-sm font-medium text-stone-600 mb-1">Mesajınız</label>
-                <textarea rows={5} className="w-full border border-stone-300 rounded p-3 focus:border-brand-gold outline-none" placeholder="Size nasıl yardımcı olabiliriz?"></textarea>
-              </div>
-              <button className="w-full bg-brand-black text-white font-bold py-3 rounded hover:bg-stone-800 transition">
-                GÖNDER
-              </button>
-            </form>
-          </div>
-
+          <form className="space-y-6">
+               <input className="w-full bg-white border border-gray-200 p-4 outline-none focus:border-brand-black transition" placeholder="Adınız" />
+               <input className="w-full bg-white border border-gray-200 p-4 outline-none focus:border-brand-black transition" placeholder="E-posta" />
+               <textarea className="w-full bg-white border border-gray-200 p-4 outline-none focus:border-brand-black transition h-32" placeholder="Mesajınız" />
+               <button className="bg-brand-black text-white px-8 py-4 text-xs font-bold uppercase tracking-widest hover:bg-brand-green transition">Gönder</button>
+          </form>
         </div>
       </div>
     </div>
   );
 };
-
-export default ContactPage;

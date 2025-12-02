@@ -1,43 +1,45 @@
 import React from 'react';
-import { PRODUCTS, CATEGORIES } from '../constants';
-import ProductCard from '../components/ProductCard';
+import { useLocation } from 'react-router-dom';
+import { ProductCard } from '../components/ProductCard';
+import { useShop } from '../context/ShopContext';
+import { CATEGORIES } from '../constants';
 
-const ProductListPage: React.FC = () => {
+export const ProductListPage = () => {
+  const { products } = useShop();
+  const location = useLocation();
+  
+  const queryParams = new URLSearchParams(location.search);
+  const categoryFilter = queryParams.get('category');
+
+  const filteredProducts = categoryFilter 
+    ? products.filter(p => p.category === categoryFilter) 
+    : products;
+
+  const currentCategoryName = categoryFilter 
+    ? CATEGORIES.find(c => c.id === categoryFilter)?.name 
+    : 'Tüm Koleksiyon';
+
   return (
-    <div className="bg-stone-50 min-h-screen py-10">
-      <div className="container mx-auto px-4">
+    <div className="bg-brand-cream min-h-screen py-12">
+      <div className="container mx-auto px-6">
         
-        {/* Category Header */}
-        <div className="mb-12 text-center">
-          <h1 className="text-3xl md:text-4xl font-serif font-bold text-brand-black mb-4">Tüm Doğal Lezzetler</h1>
-          <p className="text-stone-600 max-w-2xl mx-auto">
-            Kars'ın bereketli topraklarından geleneksel yöntemlerle üretilen tüm ürünlerimize buradan ulaşabilirsiniz.
-          </p>
+        <div className="flex flex-col items-center mb-16 text-center">
+            <h1 className="text-4xl md:text-5xl font-serif text-brand-black mb-4">{currentCategoryName}</h1>
+            <div className="w-20 h-1 bg-brand-green"></div>
         </div>
 
-        {/* Categories Nav */}
-        <div className="flex flex-wrap justify-center gap-4 mb-16">
-          <button className="px-6 py-2 bg-brand-black text-white rounded-full text-sm font-medium">Tümü</button>
-          {CATEGORIES.map(cat => (
-            <button key={cat.id} className="px-6 py-2 bg-white text-stone-600 border border-stone-200 hover:border-brand-brown hover:text-brand-brown rounded-full text-sm font-medium transition">
-              {cat.name}
-            </button>
-          ))}
-        </div>
-
-        {/* Product Grid */}
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-8">
-          {PRODUCTS.map(product => (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-x-6 gap-y-12">
+          {filteredProducts.map(product => (
             <ProductCard key={product.id} product={product} />
           ))}
-          {/* Duplicating products to fill the grid for demo purposes */}
-          {PRODUCTS.map(product => (
-            <ProductCard key={`${product.id}-dup`} product={{...product, id: `${product.id}-dup`, name: `${product.name} (Küçük Boy)`}} />
-          ))}
         </div>
+
+        {filteredProducts.length === 0 && (
+           <div className="text-center py-20">
+             <p className="text-gray-500 font-light">Bu kategoride şu an ürün bulunmuyor.</p>
+           </div>
+        )}
       </div>
     </div>
   );
 };
-
-export default ProductListPage;
