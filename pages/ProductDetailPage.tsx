@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { useShop } from '../context/ShopContext';
-import { Star, Minus, Plus, ShoppingBag, Truck, Shield } from 'lucide-react';
+import { Star, Minus, Plus, ShoppingBag, Truck, Shield, Medal, Heart, PhoneCall } from 'lucide-react';
 import { ProductCard } from '../components/ProductCard';
 
 export const ProductDetailPage = () => {
@@ -107,7 +107,73 @@ export const ProductDetailPage = () => {
             </div>
           </div>
         </div>
+        {/* Trust / Benefit Strip */}
+        <div className="border-t border-gray-100 pt-12 pb-10 mb-12">
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+            {/* Ücretsiz kargo */}
+            <div className="flex flex-col items-center">
+              <Truck className="w-10 h-10 mb-3 text-yellow-500" />
+              <p className="text-sm font-semibold text-brand-black">
+                Ücretsiz kargo.
+              </p>
+              <p className="text-xs text-gray-500">
+                Hızlı ve güvenli paketleme.
+              </p>
+            </div>
 
+            {/* 20 yıllık uzman */}
+            <div className="flex flex-col items-center">
+              <Medal className="w-10 h-10 mb-3 text-yellow-500" />
+              <p className="text-sm font-semibold text-brand-black">
+                20 yıllık uzman.
+              </p>
+              <p className="text-xs text-gray-500">
+                Doğrudan üreticiden satın alın.
+              </p>
+            </div>
+
+            {/* Tamamen Doğal */}
+            <div className="flex flex-col items-center">
+              <Star className="w-10 h-10 mb-3 text-yellow-500" />
+              <p className="text-sm font-semibold text-brand-black">
+                Tamamen Doğal
+              </p>
+              <p className="text-xs text-gray-500">
+                Doğadan doğruca sofranıza.
+              </p>
+            </div>
+
+            {/* Memnuniyet garantisi */}
+            <div className="flex flex-col items-center">
+              <Heart className="w-10 h-10 mb-3 text-yellow-500" />
+              <p className="text-sm font-semibold text-brand-black">
+                Memnuniyet garantisi.
+              </p>
+              <p className="text-xs text-gray-500">
+                Müşterilerimize bağlılık.
+              </p>
+            </div>
+          </div>
+
+          {/* Telefon satırı */}
+          <div className="mt-10 text-center text-sm">
+            <p className="font-semibold text-brand-black">
+              Telefonla uzman tavsiyesi:
+            </p>
+            <p className="flex items-center justify-center gap-2 mt-1">
+              <PhoneCall className="w-4 h-4 text-yellow-500" />
+              <a
+                href="tel:+905551234567"
+                className="font-semibold text-yellow-600 hover:underline"
+              >
+                +90 555 123 45 67
+              </a>
+            </p>
+            <p className="text-xs text-gray-500 mt-1">
+              Pazartesi - Cuma 11:00 - 15:00
+            </p>
+          </div>
+        </div>
         {/* Reviews Section */}
         <div className="border-t border-gray-100 pt-16 mb-20">
              <h3 className="text-2xl font-display font-bold mb-8">Müşteri Deneyimleri</h3>
