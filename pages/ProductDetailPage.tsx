@@ -84,7 +84,7 @@ export const ProductDetailPage = () => {
                     
                     <button 
                       onClick={handleAddToCart}
-                      className="flex-1 bg-brand-black text-white font-display font-bold text-lg h-14 rounded-lg hover:bg-brand-green transition duration-300 flex items-center justify-center gap-3 shadow-xl shadow-brand-green/20"
+                      className="flex-1 bg-brand-green text-white font-display font-bold text-lg h-14 rounded-lg hover:bg-brand-black transition duration-300 flex items-center justify-center gap-3 shadow-xl shadow-brand-green/20"
                     >
                       <ShoppingBag className="w-5 h-5" />
                       Sepete Ekle
