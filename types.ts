@@ -11,6 +11,7 @@ export interface Product {
   shortDescription: string;
   reviews: Review[];
   stock: number;
+  longDescription?: string;
 }
 
 export interface Review {

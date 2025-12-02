@@ -197,6 +197,16 @@ export const ProductDetailPage = () => {
              </div>
         </div>
 
+        {/* Product Long Description / SEO Text */}
+        <div className="border-t border-gray-100 pt-12 pb-16">
+          <h2 className="text-2xl md:text-3xl font-display font-bold text-brand-black mb-6">
+            {product.name} Ürün Detayı
+          </h2>
+          <p className="text-gray-700 leading-relaxed whitespace-pre-line">
+            {product.longDescription}
+          </p>
+        </div>
+
         {/* Related */}
         <div className="pt-16 border-t border-gray-100">
            <div className="flex justify-between items-center mb-8">
