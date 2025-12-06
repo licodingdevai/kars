@@ -4,41 +4,58 @@ import { ProductCard } from '../components/ProductCard';
 import { useShop } from '../context/ShopContext';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Snowflake, ShieldCheck, Award } from 'lucide-react';
+import { API_ENDPOINTS } from '../config/api';
+
+interface Category {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  isActive: boolean;
+  sortOrder: number;
+}
 
 export const HomePage = () => {
   const { products } = useShop();
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
-  
+  const [categories, setCategories] = useState<Category[]>([]);
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     document.title = "Kars Reserve | Orijinal Lezzet";
+    fetchCategories();
   }, []);
 
+  const fetchCategories = async () => {
+    try {
+      const response = await fetch(API_ENDPOINTS.categories);
+      const data = await response.json();
+      setCategories(data.categories.filter((cat: Category) => cat.isActive));
+    } catch (error) {
+      console.error('Kategoriler yüklenirken hata:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   // Filter logic
-  const filteredProducts = selectedCategory === 'all' 
-    ? products 
+  const filteredProducts = selectedCategory === 'all'
+    ? products
     : products.filter(p => p.category === selectedCategory);
 
-  const categories = [
-    { 
-      id: 'all', 
-      label: 'TÜMÜ', 
-      image: '/assets/images/category-tumu.png' 
+  // Build display categories with "TÜMÜ" at the start
+  const displayCategories = [
+    {
+      id: 'all',
+      label: 'TÜMÜ',
+      image: '/assets/images/category-tumu.png'
     },
-    { 
-      id: 'peynir', 
-      label: 'PEYNİR', 
-      image: '/assets/images/category-peynir.png'
-    },
-    { 
-      id: 'bal', 
-      label: 'BAL', 
-      image: '/assets/images/category-bal.png'
-    },
-    { 
-      id: 'yag', 
-      label: 'TEREYAĞI', 
-      image: '/assets/images/category-tereyagi.png'
-    },
+    ...categories.map(cat => ({
+      id: cat.slug,
+      label: cat.name.toUpperCase(),
+      image: cat.image || '/assets/images/category-tumu.png'
+    }))
   ];
 
   return (
@@ -54,7 +71,7 @@ export const HomePage = () => {
           style={{ scrollbarWidth: 'none', msOverflowStyle: 'none' }}
         >
            <div className="flex space-x-8 md:justify-center min-w-max px-2 py-2">
-              {categories.map((cat) => (
+              {displayCategories.map((cat) => (
                 <button 
                   key={cat.id}
                   onClick={() => setSelectedCategory(cat.id)}
@@ -103,7 +120,7 @@ export const HomePage = () => {
         <div className="container mx-auto px-4 md:px-8">
           <div className="flex justify-between items-center mb-8 border-l-4 border-brand-green pl-4">
              <h2 className="text-2xl font-display font-bold text-brand-black tracking-tight uppercase">
-               {selectedCategory === 'all' ? 'Öne Çıkanlar' : categories.find(c => c.id === selectedCategory)?.label}
+               {selectedCategory === 'all' ? 'Öne Çıkanlar' : displayCategories.find(c => c.id === selectedCategory)?.label}
              </h2>
              <span className="text-xs font-bold text-brand-green bg-brand-green/10 px-3 py-1 rounded-full">
                {filteredProducts.length} Ürün
