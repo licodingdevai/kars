@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect } from 'react';
 import { Product, CartItem, Order, AnalyticsEvent } from '../types';
-import { MOCK_PRODUCTS } from '../constants';
+import { API_ENDPOINTS } from '../config/api';
 
 interface ShopContextType {
   products: Product[];
@@ -14,14 +14,32 @@ interface ShopContextType {
   addOrder: (order: Order) => void;
   addProduct: (product: Product) => void;
   deleteProduct: (productId: string) => void;
+  loading: boolean;
 }
 
 const ShopContext = createContext<ShopContextType | undefined>(undefined);
 
 export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const [products, setProducts] = useState<Product[]>(MOCK_PRODUCTS);
+  const [products, setProducts] = useState<Product[]>([]);
   const [cart, setCart] = useState<CartItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      const response = await fetch(`${API_ENDPOINTS.products}?page=1&limit=50`);
+      const data = await response.json();
+      setProducts(data.products.filter((p: Product) => p.isActive));
+    } catch (error) {
+      console.error('Ürünler yüklenirken hata:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   // Push event to Data Layer helper
   const pushToDataLayer = (event: AnalyticsEvent) => {
@@ -43,15 +61,16 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     });
 
     // GA4 Add to Cart Event
+    const priceNum = parseFloat(product.price);
     pushToDataLayer({
       event: 'add_to_cart',
       ecommerce: {
         currency: 'TRY',
-        value: product.price * quantity,
+        value: priceNum * quantity,
         items: [{
           item_id: product.id,
           item_name: product.name,
-          price: product.price,
+          price: priceNum,
           quantity: quantity
         }]
       }
@@ -89,21 +108,22 @@ export const ShopProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProducts(prev => prev.filter(p => p.id !== productId));
   };
 
-  const cartTotal = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
+  const cartTotal = cart.reduce((sum, item) => sum + (parseFloat(item.price) * item.quantity), 0);
 
   return (
-    <ShopContext.Provider value={{ 
-      products, 
-      cart, 
-      addToCart, 
-      removeFromCart, 
-      updateQuantity, 
-      clearCart, 
+    <ShopContext.Provider value={{
+      products,
+      cart,
+      addToCart,
+      removeFromCart,
+      updateQuantity,
+      clearCart,
       cartTotal,
       orders,
       addOrder,
       addProduct,
-      deleteProduct
+      deleteProduct,
+      loading
     }}>
       {children}
     </ShopContext.Provider>

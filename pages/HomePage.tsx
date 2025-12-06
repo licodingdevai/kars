@@ -39,10 +39,10 @@ export const HomePage = () => {
     }
   };
 
-  // Filter logic
+  // Filter logic - use category.slug for filtering
   const filteredProducts = selectedCategory === 'all'
     ? products
-    : products.filter(p => p.category === selectedCategory);
+    : products.filter(p => p.category?.slug === selectedCategory);
 
   // Build display categories with "TÜMÜ" at the start
   const displayCategories = [

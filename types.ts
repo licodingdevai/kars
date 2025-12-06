@@ -1,23 +1,63 @@
+export interface ProductImage {
+  id: string;
+  url: string;
+  alt?: string;
+  isPrimary: boolean;
+  sortOrder: number;
+}
+
+export interface ProductVariant {
+  id: string;
+  name: string;
+  price: string;
+  discountPrice: string | null;
+  stock: number;
+  sku: string | null;
+  isActive: boolean;
+  sortOrder: number;
+}
+
+export interface ProductCategory {
+  id: string;
+  name: string;
+  slug: string;
+  description: string | null;
+  image: string | null;
+  isActive: boolean;
+}
+
+export interface ProductDescription {
+  icon: string;
+  text: string;
+}
+
 export interface Product {
   id: string;
   name: string;
   slug: string;
-  price: number;
-  oldPrice?: number;
-  image: string;
-  imageAlt: string; // Critical for SEO
-  category: string;
-  description: string;
+  price: string;
+  discountPrice?: string | null;
   shortDescription: string;
-  reviews: Review[];
+  fullDescription?: string | null;
+  description: ProductDescription[];
   stock: number;
-  longDescription?: string;
+  sku?: string | null;
+  isActive: boolean;
+  isFeatured: boolean;
+  viewCount: number;
+  soldCount: number;
+  categoryId: string;
+  category: ProductCategory;
+  images: ProductImage[];
+  variants: ProductVariant[];
+  createdAt: string;
+  updatedAt: string;
 }
 
 export interface Review {
   id: string;
   user: string;
-  avatar: string; // Picsum url
+  avatar: string;
   rating: number;
   comment: string;
   date: string;
